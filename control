@@ -1,0 +1,9 @@
+Package: jp.akusio.springboard3d
+Name: springboard3D
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: akusio
+Author: akusio
+Section: Tweaks
