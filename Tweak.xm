@@ -13,7 +13,13 @@ static UIImage* getAppIcon(SBApplication* app){
     
     SBApplicationIcon* icon = [[%c(SBApplicationIcon) alloc] initWithApplication:app];
     
-    return [icon getUnmaskedIconImage:2];
+    struct SBIconImageInfo iconInfo;
+    
+    iconInfo.size = CGSizeMake(128, 128);
+    iconInfo.scale = 2.0;
+    iconInfo.continuousCornerRadius = 0;
+    
+    return [icon unmaskedIconImageWithInfo:iconInfo];
 
 }
 
@@ -32,15 +38,22 @@ static UIImage* getAppIcon(SBApplication* app){
         
         NSArray<SBApplication*>* apps = [[%c(SBApplicationController) sharedInstance] allApplications];
         
+        
+        
         for(SBApplication* app in apps){
             
             UIImage* texture = getAppIcon(app);
             
             if(texture == nil) continue;
             
+            NSLog(@"[AXIO] %@, %@", [app bundleIdentifier], texture);
+            
             [mainViewController spawnBoxWithBundleID:[app bundleIdentifier] image:texture];
             
+            NSLog(@"[AXIO]");
+            
         }
+        
         
     }
 
@@ -54,7 +67,19 @@ static UIImage* getAppIcon(SBApplication* app){
 
 %end
 
+/*
+%hook SBUIController
 
+-(void)activateApplication:(id)arg1 fromIcon:(id)arg2 location:(id)arg3 activationSettings:(id)arg4 actions:(id)arg5{
+    
+    NSLog(@"[AXIO]arg1(%@)\n\narg2(%@)\n\narg3(%@)\n\narg4(%@)\n\narg5(%@)", arg1, arg2, arg3, arg4, arg5);
+    
+    return %orig;
+    
+}
+
+%end
+*/
 
 %ctor{
     

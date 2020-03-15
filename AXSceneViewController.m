@@ -52,7 +52,7 @@
     SCNNode* lightNode = [SCNNode node];
     lightNode.light = [SCNLight light];
     lightNode.light.type = SCNLightTypeDirectional;
-    lightNode.light.intensity = 400.0;
+    lightNode.light.intensity = 800.0;
     lightNode.light.castsShadow = YES;
     lightNode.light.orthographicScale = 16;
     lightNode.light.shadowMapSize = CGSizeMake(1024, 1024);
@@ -75,7 +75,7 @@
     view.scene = scene;
     
     
-    AXControllerView* controller = [[AXControllerView alloc] initWithFrame:CGRectMake(20, 400, 100, 100)];
+    AXControllerView* controller = [[AXControllerView alloc] initWithFrame:CGRectMake(20, 400, 100, 200)];
     controller.backgroundColor = [UIColor whiteColor];
     self.controller = controller;
     
@@ -125,7 +125,7 @@
         
         if([hitResult[0].node isKindOfClass:[AXBoxNode class]]){
         
-            NSLog(@"hit %@", hitResult[0].node);
+            NSLog(@"[AXIO]hit %@", hitResult[0].node);
             AXBoxNode* node = (AXBoxNode*)hitResult[0].node;
             
             SBApplication* app = [[NSClassFromString(@"SBApplicationController") sharedInstance] applicationWithBundleIdentifier:node.identifier];
@@ -134,7 +134,7 @@
             
             SBActivationSettings* empty = [[NSClassFromString(@"SBActivationSettings") alloc] init];
             
-            [[NSClassFromString(@"SBUIController") sharedInstance] activateApplication:app fromIcon:icon location:1 activationSettings:empty actions:nil];
+            [[NSClassFromString(@"SBUIController") sharedInstance] activateApplication:app fromIcon:icon location:NSClassFromString(@"SBIconLocationRoot") activationSettings:empty actions:nil];
             
         }
         
@@ -159,7 +159,7 @@
 
 -(void)renderer:(id<SCNSceneRenderer>)renderer updateAtTime:(NSTimeInterval)time{
     
-    if(self.controller.isOn){
+    if(self.controller.isOn && self.controller.isTappedTop){
         
         SCNVector3 forward = self.mainCamera.worldFront;
         SCNVector3 pos = self.mainCamera.position;
@@ -167,6 +167,15 @@
         self.mainCamera.position = SCNVector3Make(pos.x + forward.x * speed,
                                                   pos.y + forward.y * speed,
                                                   pos.z + forward.z * speed);
+        
+    }else if(self.controller.isOn && !self.controller.isTappedTop){
+        
+        SCNVector3 forward = self.mainCamera.worldFront;
+        SCNVector3 pos = self.mainCamera.position;
+        float speed = 0.1;
+        self.mainCamera.position = SCNVector3Make(pos.x - forward.x * speed,
+                                                  pos.y - forward.y * speed,
+                                                  pos.z - forward.z * speed);
         
     }
     
